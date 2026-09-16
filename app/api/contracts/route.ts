@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { canManageContracts } from '@/lib/permissions'
 
 export async function GET() {
   const session = await auth()
@@ -18,9 +19,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: '인증 필요' }, { status: 401 })
-  if (!['ADMIN', 'GENERAL'].includes(session.user.role)) {
-    return NextResponse.json({ error: '권한 없음' }, { status: 403 })
-  }
+  if (!canManageContracts(session)) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
   const body = await req.json()
   const contract = await db.contract.create({
