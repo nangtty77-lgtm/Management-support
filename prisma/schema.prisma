@@ -64,6 +64,11 @@ model User {
   notifications  Notification[]
   accounts       Account[]
   sessions       Session[]
+
+  salesAssigned     Sale[]     @relation("SaleAssignee")
+  purchasesAssigned Purchase[] @relation("PurchaseAssignee")
+  expenses          Expense[]  @relation("ExpensePaidBy")
+  expensesApproved  Expense[]  @relation("ExpenseApprovedBy")
 }
 
 enum Role {
@@ -229,4 +234,121 @@ enum NotificationType {
   TASK_ASSIGNED
   LEAVE_APPROVED
   SYSTEM
+  SALE_OVERDUE
+  PURCHASE_DUE
+  EXPENSE_APPROVED
+  EXPENSE_REJECTED
+}
+
+// ── Accounting ────────────────────────────────────────────────
+
+model Vendor {
+  id        String     @id @default(cuid())
+  name      String
+  bizNo     String?
+  ceoName   String?
+  address   String?
+  phone     String?
+  email     String?
+  type      VendorType @default(BOTH)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  sales     Sale[]
+  purchases Purchase[]
+}
+
+enum VendorType {
+  CUSTOMER
+  SUPPLIER
+  BOTH
+}
+
+model Sale {
+  id          String     @id @default(cuid())
+  vendorId    String
+  vendor      Vendor     @relation(fields: [vendorId], references: [id])
+  title       String
+  amount      BigInt
+  taxAmount   BigInt     @default(0)
+  totalAmount BigInt
+  saleDate    DateTime
+  dueDate     DateTime?
+  paidDate    DateTime?
+  paidAmount  BigInt     @default(0)
+  status      SaleStatus @default(UNPAID)
+  notes       String?
+  assigneeId  String?
+  assignee    User?      @relation("SaleAssignee", fields: [assigneeId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+enum SaleStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+model Purchase {
+  id           String         @id @default(cuid())
+  vendorId     String
+  vendor       Vendor         @relation(fields: [vendorId], references: [id])
+  title        String
+  amount       BigInt
+  taxAmount    BigInt         @default(0)
+  totalAmount  BigInt
+  purchaseDate DateTime
+  dueDate      DateTime?
+  paidDate     DateTime?
+  paidAmount   BigInt         @default(0)
+  status       PurchaseStatus @default(UNPAID)
+  notes        String?
+  assigneeId   String?
+  assignee     User?          @relation("PurchaseAssignee", fields: [assigneeId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+enum PurchaseStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+model Expense {
+  id           String        @id @default(cuid())
+  type         ExpenseType
+  title        String
+  amount       BigInt
+  expenseDate  DateTime
+  paidById     String
+  paidBy       User          @relation("ExpensePaidBy", fields: [paidById], references: [id])
+  status       ExpenseStatus @default(PENDING)
+  receiptUrl   String?
+  notes        String?
+  approvedById String?
+  approvedBy   User?         @relation("ExpenseApprovedBy", fields: [approvedById], references: [id])
+  approvedAt   DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum ExpenseType {
+  CORPORATE_CARD
+  PERSONAL
+  TRAVEL
+  ENTERTAINMENT
+  VEHICLE
+  SUPPLIES
+  OTHER
+}
+
+enum ExpenseStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
 }

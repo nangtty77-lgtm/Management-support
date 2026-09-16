@@ -15,6 +15,15 @@ const navSections = [
     ],
   },
   {
+    label: '회계',
+    items: [
+      { href: '/accounting/sales', label: '매출관리', icon: '💰' },
+      { href: '/accounting/purchases', label: '매입관리', icon: '🛒' },
+      { href: '/accounting/expenses', label: '비용관리', icon: '💳' },
+      { href: '/accounting/vendors', label: '거래처관리', icon: '🏢' },
+    ],
+  },
+  {
     label: '총무',
     items: [{ href: '/contracts', label: '계약관리', icon: '📄' }],
   },
