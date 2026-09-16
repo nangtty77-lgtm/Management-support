@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
+import { isViewOnly } from '@/lib/permissions'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/Badge'
 
@@ -9,7 +10,7 @@ const STATUS_LABEL: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '
 
 export default async function TasksPage() {
   const session = await auth()
-  const canWrite = ['ADMIN', 'OPS'].includes(session?.user?.role ?? '') || !!session
+  const canWrite = !isViewOnly(session)
 
   const tasks = await db.task.findMany({
     where: { status: { not: 'COMPLETED' } },

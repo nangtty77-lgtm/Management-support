@@ -6,6 +6,7 @@ import { canManageContracts } from '@/lib/permissions'
 export async function GET() {
   const session = await auth()
   if (!session) return NextResponse.json({ error: '인증 필요' }, { status: 401 })
+  if (!canManageContracts(session)) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
   const contracts = await db.contract.findMany({
     include: { owner: { select: { name: true } } },

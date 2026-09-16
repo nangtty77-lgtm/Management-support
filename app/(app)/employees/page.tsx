@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { canManageHR } from '@/lib/permissions'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/Badge'
 
@@ -12,6 +14,7 @@ const STATUS_BADGE: Record<string, 'teal' | 'warning' | 'gray' | 'danger'> = {
 
 export default async function EmployeesPage() {
   const session = await auth()
+  if (!session || !canManageHR(session)) redirect('/dashboard')
   const canWrite = ['ADMIN', 'HR'].includes(session?.user?.role ?? '')
   const employees = await db.employee.findMany({
     include: {

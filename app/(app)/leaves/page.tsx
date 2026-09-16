@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
+import { canManageHR } from '@/lib/permissions'
 import { Badge } from '@/components/ui/Badge'
 import LeaveApprovalButton from './_components/LeaveApprovalButton'
 
@@ -9,7 +10,8 @@ const STATUS_LABEL: Record<string, string> = { PENDING: '대기', APPROVED: '승
 
 export default async function LeavesPage() {
   const session = await auth()
-  const isHRorAdmin = ['ADMIN', 'HR'].includes(session?.user?.role ?? '')
+  if (!session?.user?.id) return null
+  const isHRorAdmin = canManageHR(session)
   const where = isHRorAdmin ? {} : { employee: { userId: session?.user?.id } }
 
   const leaves = await db.leaveRequest.findMany({

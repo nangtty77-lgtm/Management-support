@@ -6,6 +6,7 @@ import { canManageHR } from '@/lib/permissions'
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: '인증 필요' }, { status: 401 })
+  if (!canManageHR(session)) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
   const { id } = await params
   const emp = await db.employee.findUnique({

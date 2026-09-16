@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import { notFound } from 'next/navigation'
+import { canManageAllTasks, canManageOwnTask } from '@/lib/permissions'
 import { Badge } from '@/components/ui/Badge'
 import StatusChanger from '../_components/StatusChanger'
 
@@ -21,9 +22,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
   })
   if (!task) notFound()
 
-  const canEdit = ['ADMIN', 'OPS'].includes(session?.user?.role ?? '')
-    || task.assigneeId === session?.user?.id
-    || task.creatorId === session?.user?.id
+  const canEdit = canManageAllTasks(session) || canManageOwnTask(session, task)
 
   return (
     <div className="space-y-6 max-w-2xl">

@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { canManageContracts } from '@/lib/permissions'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/Badge'
 
@@ -10,6 +12,7 @@ const STATUS_BADGE: Record<string, 'teal' | 'danger' | 'gray' | 'warning'> = {
 
 export default async function ContractsPage() {
   const session = await auth()
+  if (!session || !canManageContracts(session)) redirect('/dashboard')
   const canWrite = ['ADMIN', 'GENERAL'].includes(session?.user?.role ?? '')
 
   const contracts = await db.contract.findMany({

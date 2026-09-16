@@ -22,6 +22,7 @@ const TYPE_BADGE: Record<string, 'danger' | 'warning' | 'teal' | 'gray' | 'navy'
 
 export default async function NotificationsPage() {
   const session = await auth()
+  if (!session?.user?.id) return null
   const notifications = await db.notification.findMany({
     where: { userId: session?.user?.id },
     orderBy: { createdAt: 'desc' },

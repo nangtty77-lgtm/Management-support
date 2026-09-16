@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { canManageHR } from '@/lib/permissions'
 import { Badge } from '@/components/ui/Badge'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -17,7 +18,8 @@ const APPROVAL_LABEL: Record<string, string> = {
 }
 
 export default async function EmployeeDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await auth()
+  const session = await auth()
+  if (!session || !canManageHR(session)) redirect('/dashboard')
   const { id } = await params
   const emp = await db.employee.findUnique({
     where: { id },

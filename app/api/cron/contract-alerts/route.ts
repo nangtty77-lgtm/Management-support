@@ -3,6 +3,9 @@ import { db } from '@/lib/db'
 
 // Called by Vercel Cron (daily) — secured by CRON_SECRET header
 export async function GET(req: NextRequest) {
+  if (!process.env.CRON_SECRET) {
+    return NextResponse.json({ error: '서버 설정 오류' }, { status: 500 })
+  }
   const secret = req.headers.get('authorization')
   if (secret !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
