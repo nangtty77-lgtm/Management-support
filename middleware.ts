@@ -1,9 +1,11 @@
-import { auth } from '@/lib/auth'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export default auth((req) => {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
-  const isLoggedIn = !!req.auth
+  const token =
+    req.cookies.get('authjs.session-token') ??
+    req.cookies.get('__Secure-authjs.session-token')
+  const isLoggedIn = !!token
 
   if (pathname.startsWith('/login')) {
     if (isLoggedIn) return NextResponse.redirect(new URL('/dashboard', req.url))
@@ -15,7 +17,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
