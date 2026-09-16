@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Auth.js required models ──────────────────────────────────
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ── Core ─────────────────────────────────────────────────────
+model User {
+  id            String      @id @default(cuid())
+  name          String
+  email         String      @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role        @default(VIEW)
+  departmentId  String?
+  department    Department? @relation(fields: [departmentId], references: [id])
+  active        Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  employee       Employee?
+  assignedTasks  Task[]         @relation("TaskAssignee")
+  createdTasks   Task[]         @relation("TaskCreator")
+  ownedContracts Contract[]
+  notifications  Notification[]
+  accounts       Account[]
+  sessions       Session[]
+}
+
+enum Role {
+  ADMIN
+  HR
+  GENERAL
+  OPS
+  VIEW
+}
+
+model Department {
+  id        String     @id @default(cuid())
+  name      String
+  createdAt DateTime   @default(now())
+  users     User[]
+  employees Employee[]
+}
+
+// ── HR ───────────────────────────────────────────────────────
+model Employee {
+  id           String     @id @default(cuid())
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id])
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  position     String
+  phone        String?
+  hireDate     DateTime
+  leaveDate    DateTime?
+  status       EmpStatus  @default(ACTIVE)
+  annualLeave  Int        @default(15)
+  usedLeave    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  leaveRequests LeaveRequest[]
+}
+
+enum EmpStatus {
+  ACTIVE
+  PROBATION
+  LEAVE
+  RESIGNED
+}
+
+model LeaveRequest {
+  id         String         @id @default(cuid())
+  employeeId String
+  employee   Employee       @relation(fields: [employeeId], references: [id])
+  type       LeaveType
+  startDate  DateTime
+  endDate    DateTime
+  days       Float
+  reason     String?
+  status     ApprovalStatus @default(PENDING)
+  approverId String?
+  approvedAt DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+enum LeaveType {
+  ANNUAL
+  SICK
+  SPECIAL
+  UNPAID
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ── Contracts ────────────────────────────────────────────────
+model Contract {
+  id          String         @id @default(cuid())
+  name        String
+  vendorName  String
+  amount      BigInt
+  startDate   DateTime
+  endDate     DateTime
+  autoRenewal Boolean        @default(false)
+  ownerId     String
+  owner       User           @relation(fields: [ownerId], references: [id])
+  notes       String?
+  fileUrl     String?
+  status      ContractStatus @default(ACTIVE)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  alerts ContractAlert[]
+  tasks  Task[]
+}
+
+enum ContractStatus {
+  ACTIVE
+  EXPIRED
+  TERMINATED
+  DRAFT
+}
+
+model ContractAlert {
+  id         String    @id @default(cuid())
+  contractId String
+  contract   Contract  @relation(fields: [contractId], references: [id])
+  alertDays  Int
+  sentAt     DateTime?
+  createdAt  DateTime  @default(now())
+}
+
+// ── Tasks ────────────────────────────────────────────────────
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  assigneeId  String?
+  assignee    User?      @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creatorId   String
+  creator     User       @relation("TaskCreator", fields: [creatorId], references: [id])
+  priority    Priority   @default(NORMAL)
+  status      TaskStatus @default(PENDING)
+  dueDate     DateTime?
+  completedAt DateTime?
+  contractId  String?
+  contract    Contract?  @relation(fields: [contractId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+enum Priority {
+  URGENT
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  REVIEW
+  COMPLETED
+  ON_HOLD
+}
+
+// ── Notifications ────────────────────────────────────────────
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}
+
+enum NotificationType {
+  CONTRACT_EXPIRY
+  LEAVE_REQUEST
+  TASK_DUE
+  TASK_ASSIGNED
+  LEAVE_APPROVED
+  SYSTEM
+}

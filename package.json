@@ -13,6 +13,7 @@
     "@auth/prisma-adapter": "^2.11.3",
     "@prisma/client": "^6",
     "@vercel/blob": "^2.8.0",
+    "bcryptjs": "^3.0.3",
     "next": "16.3.5",
     "next-auth": "5.0.0-beta.32",
     "prisma": "^6",
@@ -23,6 +24,7 @@
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -31,8 +33,12 @@
     "eslint-config-next": "16.3.5",
     "jsdom": "^30.0.1",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5",
     "vitest": "^5.0.0"
   },
-  "packageManager": "pnpm@12.4.2"
+  "packageManager": "pnpm@12.4.2",
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  }
 }
