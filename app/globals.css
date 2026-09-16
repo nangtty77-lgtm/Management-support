@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0D1E40;
+  --color-teal: #00BFA5;
+  --color-content-bg: #EFF3F9;
+  --color-card-bg: #FFFFFF;
+  --color-sub: #64748B;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --font-family-sans: "Noto Sans KR", sans-serif;
+}
+
+:root {
+  --background: #EFF3F9;
+  --foreground: #0D1E40;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
