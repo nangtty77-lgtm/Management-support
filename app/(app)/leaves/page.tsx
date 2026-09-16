@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import { canManageHR } from '@/lib/permissions'
 import { Badge } from '@/components/ui/Badge'
+import Link from 'next/link'
 import LeaveApprovalButton from './_components/LeaveApprovalButton'
 
 const TYPE_LABEL: Record<string, string> = { ANNUAL: '연차', SICK: '병가', SPECIAL: '특별', UNPAID: '무급' }
@@ -24,6 +25,9 @@ export default async function LeavesPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-navy">연차관리</h1>
+        <Link href="/leaves/new" className="bg-teal text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal/90">
+          + 연차 신청
+        </Link>
       </div>
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">

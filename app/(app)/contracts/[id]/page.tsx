@@ -30,7 +30,17 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-start justify-between">
         <h1 className="text-2xl font-bold text-navy">{contract.name}</h1>
-        <Badge variant={STATUS_BADGE[contract.status]}>{STATUS_LABEL[contract.status]}</Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant={STATUS_BADGE[contract.status]}>{STATUS_LABEL[contract.status]}</Badge>
+          {canWrite && (
+            <Link
+              href={`/contracts/${contract.id}/edit`}
+              className="bg-white border border-gray-200 text-navy px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-50"
+            >
+              수정
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 grid grid-cols-2 gap-4 text-sm">

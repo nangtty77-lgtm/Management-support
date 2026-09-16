@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { notFound } from 'next/navigation'
 import { canManageAllTasks, canManageOwnTask } from '@/lib/permissions'
 import { Badge } from '@/components/ui/Badge'
+import Link from 'next/link'
 import StatusChanger from '../_components/StatusChanger'
 
 const PRIORITY_LABEL: Record<string, string> = { URGENT: '긴급', HIGH: '높음', NORMAL: '보통', LOW: '낮음' }
@@ -31,7 +32,17 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
           <h1 className="text-2xl font-bold text-navy">{task.title}</h1>
           {task.description && <p className="text-sub mt-1 text-sm">{task.description}</p>}
         </div>
-        <Badge variant={PRIORITY_BADGE[task.priority]}>{PRIORITY_LABEL[task.priority]}</Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant={PRIORITY_BADGE[task.priority]}>{PRIORITY_LABEL[task.priority]}</Badge>
+          {canEdit && (
+            <Link
+              href={`/tasks/${task.id}/edit`}
+              className="bg-white border border-gray-200 text-navy px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-50"
+            >
+              수정
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 grid grid-cols-2 gap-4 text-sm">
