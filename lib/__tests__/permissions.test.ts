@@ -20,6 +20,13 @@ describe('canManageContracts', () => {
   it('denies HR', () => expect(canManageContracts(makeSession('HR'))).toBe(false))
 })
 
+describe('canManageAllTasks', () => {
+  it('allows ADMIN', () => expect(canManageAllTasks(makeSession('ADMIN'))).toBe(true))
+  it('allows OPS', () => expect(canManageAllTasks(makeSession('OPS'))).toBe(true))
+  it('denies HR', () => expect(canManageAllTasks(makeSession('HR'))).toBe(false))
+  it('denies null session', () => expect(canManageAllTasks(null)).toBe(false))
+})
+
 describe('canManageOwnTask', () => {
   const task = { assigneeId: 'user-1', creatorId: 'user-2' }
   it('allows assignee', () => expect(canManageOwnTask(makeSession('VIEW', 'user-1'), task)).toBe(true))
