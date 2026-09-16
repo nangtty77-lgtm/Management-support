@@ -65,10 +65,13 @@ model User {
   accounts       Account[]
   sessions       Session[]
 
-  salesAssigned     Sale[]     @relation("SaleAssignee")
-  purchasesAssigned Purchase[] @relation("PurchaseAssignee")
-  expenses          Expense[]  @relation("ExpensePaidBy")
-  expensesApproved  Expense[]  @relation("ExpenseApprovedBy")
+  salesAssigned     Sale[]        @relation("SaleAssignee")
+  purchasesAssigned Purchase[]    @relation("PurchaseAssignee")
+  expenses          Expense[]     @relation("ExpensePaidBy")
+  expensesApproved  Expense[]     @relation("ExpenseApprovedBy")
+  customersAssigned Customer[]    @relation("CustomerAssignee")
+  opportunities     Opportunity[] @relation("OpportunityAssignee")
+  visits            Visit[]       @relation("VisitAssignee")
 }
 
 enum Role {
@@ -351,4 +354,87 @@ enum ExpenseStatus {
   APPROVED
   REJECTED
   PAID
+}
+
+// ── CRM / 영업지원 ────────────────────────────────────────────
+
+model Customer {
+  id           String        @id @default(cuid())
+  name         String
+  companyName  String?
+  phone        String?
+  email        String?
+  address      String?
+  industry     String?
+  grade        CustomerGrade @default(NORMAL)
+  status       CustomerStatus @default(ACTIVE)
+  assigneeId   String?
+  assignee     User?         @relation("CustomerAssignee", fields: [assigneeId], references: [id])
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  opportunities Opportunity[]
+  visits        Visit[]
+}
+
+enum CustomerGrade {
+  VIP
+  PREMIUM
+  NORMAL
+  INACTIVE
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  PROSPECT
+}
+
+model Opportunity {
+  id          String            @id @default(cuid())
+  customerId  String
+  customer    Customer          @relation(fields: [customerId], references: [id])
+  title       String
+  amount      BigInt            @default(0)
+  stage       OpportunityStage  @default(LEAD)
+  probability Int               @default(0)
+  expectedClose DateTime?
+  assigneeId  String?
+  assignee    User?             @relation("OpportunityAssignee", fields: [assigneeId], references: [id])
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+enum OpportunityStage {
+  LEAD
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  CLOSED_WON
+  CLOSED_LOST
+}
+
+model Visit {
+  id          String      @id @default(cuid())
+  customerId  String
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  title       String
+  visitDate   DateTime
+  status      VisitStatus @default(PLANNED)
+  result      String?
+  nextAction  String?
+  assigneeId  String?
+  assignee    User?       @relation("VisitAssignee", fields: [assigneeId], references: [id])
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum VisitStatus {
+  PLANNED
+  COMPLETED
+  DELAYED
+  CANCELLED
 }
