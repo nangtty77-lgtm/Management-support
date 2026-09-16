@@ -72,6 +72,7 @@ model User {
   customersAssigned Customer[]    @relation("CustomerAssignee")
   opportunities     Opportunity[] @relation("OpportunityAssignee")
   visits            Visit[]       @relation("VisitAssignee")
+  assetsAssigned    Asset[]       @relation("AssetAssignee")
 }
 
 enum Role {
@@ -88,6 +89,7 @@ model Department {
   createdAt DateTime   @default(now())
   users     User[]
   employees Employee[]
+  budgets   Budget[]
 }
 
 // ── HR ───────────────────────────────────────────────────────
@@ -437,4 +439,73 @@ enum VisitStatus {
   COMPLETED
   DELAYED
   CANCELLED
+}
+
+// ── 총무 / 자산관리 ────────────────────────────────────────────
+
+model Asset {
+  id           String      @id @default(cuid())
+  name         String
+  code         String?     @unique
+  category     AssetCategory
+  status       AssetStatus @default(IN_USE)
+  purchaseDate DateTime?
+  purchasePrice BigInt?
+  currentValue  BigInt?
+  location     String?
+  assigneeId   String?
+  assignee     User?       @relation("AssetAssignee", fields: [assigneeId], references: [id])
+  vendor       String?
+  serialNo     String?
+  notes        String?
+  disposedAt   DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+enum AssetCategory {
+  IT_EQUIPMENT
+  FURNITURE
+  VEHICLE
+  MACHINERY
+  OFFICE_SUPPLIES
+  BUILDING
+  OTHER
+}
+
+enum AssetStatus {
+  IN_USE
+  IN_STORAGE
+  UNDER_REPAIR
+  DISPOSED
+}
+
+// ── 회계 / 예산관리 ────────────────────────────────────────────
+
+model Budget {
+  id         String       @id @default(cuid())
+  year       Int
+  month      Int?
+  category   BudgetCategory
+  title      String
+  amount     BigInt
+  usedAmount BigInt       @default(0)
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  notes      String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@unique([year, month, category, departmentId])
+}
+
+enum BudgetCategory {
+  SALES
+  MARKETING
+  LABOR
+  OFFICE
+  TRAVEL
+  IT
+  FACILITY
+  OTHER
 }

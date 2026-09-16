@@ -79,6 +79,16 @@ function Icon({ name }: { name: string }) {
         <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
       </svg>
     ),
+    chart2: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      </svg>
+    ),
+    box: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
+    ),
   }
   return <span className="shrink-0">{icons[name] ?? icons.check}</span>
 }
@@ -114,7 +124,17 @@ const navSections = [
   },
   {
     label: '총무',
-    items: [{ href: '/contracts', label: '계약관리', icon: 'document' }],
+    items: [
+      { href: '/contracts', label: '계약관리', icon: 'document' },
+      { href: '/assets', label: '자산관리', icon: 'box' },
+    ],
+  },
+  {
+    label: '예산',
+    items: [
+      { href: '/budget', label: '예산관리', icon: 'chart' },
+      { href: '/accounting/report', label: '결산 리포트', icon: 'chart2' },
+    ],
   },
   {
     label: '업무',
