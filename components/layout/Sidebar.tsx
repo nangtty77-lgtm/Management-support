@@ -63,6 +63,16 @@ function Icon({ name }: { name: string }) {
         <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
     ),
+    target: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+      </svg>
+    ),
+    location: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+    ),
     chart: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
@@ -75,7 +85,7 @@ function Icon({ name }: { name: string }) {
 
 const navSections = [
   {
-    label: 'Core',
+    label: '실행',
     items: [{ href: '/dashboard', label: '대시보드', icon: 'dashboard' }],
   },
   {
@@ -95,6 +105,14 @@ const navSections = [
     ],
   },
   {
+    label: '영업',
+    items: [
+      { href: '/crm/customers', label: '고객관리', icon: 'crm' },
+      { href: '/crm/opportunities', label: '영업기회', icon: 'target' },
+      { href: '/crm/visits', label: '방문관리', icon: 'location' },
+    ],
+  },
+  {
     label: '총무',
     items: [{ href: '/contracts', label: '계약관리', icon: 'document' }],
   },
@@ -111,23 +129,34 @@ const navSections = [
 export default function Sidebar() {
   const pathname = usePathname()
   return (
-    <aside className="w-[200px] min-h-screen bg-navy flex flex-col shrink-0">
+    <aside className="w-[200px] min-h-screen bg-white border-r border-slate-200 flex flex-col shrink-0">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-white/10">
-        <div className="w-7 h-7 rounded-lg bg-teal flex items-center justify-center">
-          <span className="text-navy font-bold text-xs">B</span>
+      <div className="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100">
+        <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+          <span className="text-white font-bold text-sm">B</span>
         </div>
         <div>
-          <span className="text-white font-bold text-sm">BizHub</span>
-          <p className="text-white/30 text-[10px] leading-none">경영지원 플랫폼</p>
+          <span className="text-slate-900 font-bold text-sm">BizHub</span>
+          <p className="text-slate-400 text-[10px] leading-none">경영지원 플랫폼</p>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="px-3 pt-3 pb-2">
+        <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2 text-slate-400 text-xs">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          빠른 검색
+          <span className="ml-auto text-slate-300 text-[10px]">⌘K</span>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-3 overflow-y-auto">
+      <nav className="flex-1 px-2 pb-4 overflow-y-auto">
         {navSections.map((section) => (
           <div key={section.label} className="mb-1">
-            <p className="px-4 pt-3 pb-1 text-[10px] text-white/30 font-semibold uppercase tracking-widest">
+            <p className="px-3 pt-3 pb-1 text-[10px] text-slate-400 font-semibold uppercase tracking-widest">
               {section.label}
             </p>
             {section.items.map((item) => {
@@ -136,13 +165,13 @@ export default function Sidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2.5 mx-2 px-3 py-2 text-sm rounded-lg transition-all ${
+                  className={`flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg transition-all mb-0.5 ${
                     active
-                      ? 'bg-teal/15 text-teal font-medium'
-                      : 'text-white/55 hover:text-white hover:bg-white/5'
+                      ? 'bg-indigo-50 text-indigo-700 font-medium'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
-                  <Icon name={item.icon} />
+                  <span className={active ? 'text-indigo-600' : ''}><Icon name={item.icon} /></span>
                   {item.label}
                 </Link>
               )
@@ -152,8 +181,8 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="px-4 py-3 border-t border-white/10">
-        <p className="text-[10px] text-white/20 text-center">© 2026 BizHub</p>
+      <div className="px-3 py-3 border-t border-slate-100">
+        <p className="text-[10px] text-slate-300 text-center">© 2026 BizHub</p>
       </div>
     </aside>
   )
