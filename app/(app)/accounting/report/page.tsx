@@ -18,17 +18,17 @@ export default async function AccountingReportPage() {
 
   // Fetch all data in parallel
   const [sales, purchases, expenses] = await Promise.all([
-    db.sale.findMany({ where: { date: { gte: new Date(`${year}-01-01`), lte: new Date(`${year}-12-31`) } } }),
-    db.purchase.findMany({ where: { date: { gte: new Date(`${year}-01-01`), lte: new Date(`${year}-12-31`) } } }),
-    db.expense.findMany({ where: { date: { gte: new Date(`${year}-01-01`), lte: new Date(`${year}-12-31`) } } }),
+    db.sale.findMany({ where: { saleDate: { gte: new Date(`${year}-01-01`), lte: new Date(`${year}-12-31`) } } }),
+    db.purchase.findMany({ where: { purchaseDate: { gte: new Date(`${year}-01-01`), lte: new Date(`${year}-12-31`) } } }),
+    db.expense.findMany({ where: { expenseDate: { gte: new Date(`${year}-01-01`), lte: new Date(`${year}-12-31`) } } }),
   ])
 
   // Aggregate by month
   const months: MonthRow[] = Array.from({ length: 12 }, (_, i) => {
     const m = i + 1
-    const rev = sales.filter((s) => new Date(s.date).getMonth() + 1 === m).reduce((sum, s) => sum + Number(s.amount), 0)
-    const pur = purchases.filter((p) => new Date(p.date).getMonth() + 1 === m).reduce((sum, p) => sum + Number(p.amount), 0)
-    const exp = expenses.filter((e) => new Date(e.date).getMonth() + 1 === m).reduce((sum, e) => sum + Number(e.amount), 0)
+    const rev = sales.filter((s) => new Date(s.saleDate).getMonth() + 1 === m).reduce((sum, s) => sum + Number(s.totalAmount), 0)
+    const pur = purchases.filter((p) => new Date(p.purchaseDate).getMonth() + 1 === m).reduce((sum, p) => sum + Number(p.totalAmount), 0)
+    const exp = expenses.filter((e) => new Date(e.expenseDate).getMonth() + 1 === m).reduce((sum, e) => sum + Number(e.amount), 0)
     const profit = rev - pur - exp
     return { month: m, revenue: rev, purchases: pur, expenses: exp, profit, margin: rev > 0 ? Math.round((profit / rev) * 100) : 0 }
   })
