@@ -73,6 +73,7 @@ model User {
   opportunities     Opportunity[] @relation("OpportunityAssignee")
   visits            Visit[]       @relation("VisitAssignee")
   assetsAssigned    Asset[]       @relation("AssetAssignee")
+  taxInvoices       TaxInvoice[]
 }
 
 enum Role {
@@ -259,8 +260,9 @@ model Vendor {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  sales     Sale[]
-  purchases Purchase[]
+  sales        Sale[]
+  purchases    Purchase[]
+  taxInvoices  TaxInvoice[]
 }
 
 enum VendorType {
@@ -284,9 +286,11 @@ model Sale {
   status      SaleStatus @default(UNPAID)
   notes       String?
   assigneeId  String?
-  assignee    User?      @relation("SaleAssignee", fields: [assigneeId], references: [id])
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  assignee    User?        @relation("SaleAssignee", fields: [assigneeId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  taxInvoices TaxInvoice[]
 }
 
 enum SaleStatus {
@@ -314,6 +318,8 @@ model Purchase {
   assignee     User?          @relation("PurchaseAssignee", fields: [assigneeId], references: [id])
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+
+  taxInvoices  TaxInvoice[]
 }
 
 enum PurchaseStatus {
@@ -508,4 +514,46 @@ enum BudgetCategory {
   IT
   FACILITY
   OTHER
+}
+
+// ── 세금계산서 ─────────────────────────────────────────────────
+
+model TaxInvoice {
+  id          String            @id @default(cuid())
+  type        TaxInvoiceType
+  invoiceNo   String?
+  issueDate   DateTime
+  amount      BigInt
+  taxAmount   BigInt
+  totalAmount BigInt
+  description String?
+  notes       String?
+  status      TaxInvoiceStatus  @default(DRAFT)
+
+  vendorId    String?
+  vendor      Vendor?           @relation(fields: [vendorId], references: [id])
+
+  saleId      String?
+  sale        Sale?             @relation(fields: [saleId], references: [id])
+
+  purchaseId  String?
+  purchase    Purchase?         @relation(fields: [purchaseId], references: [id])
+
+  createdById String
+  createdBy   User              @relation(fields: [createdById], references: [id])
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+enum TaxInvoiceType {
+  ISSUED    // 발행 (매출)
+  RECEIVED  // 수취 (매입)
+}
+
+enum TaxInvoiceStatus {
+  DRAFT      // 임시저장
+  CONFIRMED  // 확정
+  REPORTED   // 신고완료
+  CANCELLED  // 취소
 }

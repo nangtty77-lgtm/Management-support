@@ -96,7 +96,10 @@ function Icon({ name }: { name: string }) {
 const navSections = [
   {
     label: '실행',
-    items: [{ href: '/dashboard', label: '대시보드', icon: 'dashboard' }],
+    items: [
+      { href: '/dashboard', label: '대시보드', icon: 'dashboard' },
+      { href: '/kpi', label: 'KPI 대시보드', icon: 'chart' },
+    ],
   },
   {
     label: 'HR',
@@ -112,6 +115,7 @@ const navSections = [
       { href: '/accounting/purchases', label: '매입관리', icon: 'cart' },
       { href: '/accounting/expenses', label: '비용관리', icon: 'card' },
       { href: '/accounting/vendors', label: '거래처관리', icon: 'building' },
+      { href: '/accounting/tax-invoices', label: '세금계산서', icon: 'document' },
     ],
   },
   {
@@ -133,6 +137,7 @@ const navSections = [
     label: '예산',
     items: [
       { href: '/budget', label: '예산관리', icon: 'chart' },
+      { href: '/accounting/budget-report', label: '예산 vs 실적', icon: 'chart' },
       { href: '/accounting/report', label: '결산 리포트', icon: 'chart2' },
     ],
   },
