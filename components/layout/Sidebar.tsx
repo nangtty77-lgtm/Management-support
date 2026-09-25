@@ -149,6 +149,13 @@ const navSections = [
     label: '알림',
     items: [{ href: '/notifications', label: '알림센터', icon: 'bell' }],
   },
+  {
+    label: '설정',
+    items: [
+      { href: '/settings/profile', label: '내 프로필', icon: 'employee' },
+      { href: '/settings/users', label: '사용자 관리', icon: 'crm' },
+    ],
+  },
 ]
 
 export default function Sidebar() {
@@ -168,13 +175,16 @@ export default function Sidebar() {
 
       {/* Search */}
       <div className="px-3 pt-3 pb-2">
-        <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2 text-slate-400 text-xs">
+        <button
+          onClick={() => (window as any).__openSearch?.()}
+          className="w-full flex items-center gap-2 bg-slate-50 hover:bg-slate-100 rounded-lg px-3 py-2 text-slate-400 text-xs transition-colors"
+        >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           빠른 검색
           <span className="ml-auto text-slate-300 text-[10px]">⌘K</span>
-        </div>
+        </button>
       </div>
 
       {/* Nav */}

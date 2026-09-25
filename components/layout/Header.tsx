@@ -23,13 +23,13 @@ export default async function Header() {
           )}
         </Link>
         <div className="h-4 w-px bg-slate-200" />
-        <div className="flex items-center gap-2">
+        <Link href="/settings/profile" className="flex items-center gap-2 hover:bg-slate-50 rounded-lg px-2 py-1 transition-colors">
           <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-xs font-bold">
             {session?.user?.name?.[0] ?? 'U'}
           </div>
           <span className="text-sm text-slate-700 font-medium">{session?.user?.name}</span>
           <span className="text-xs text-slate-400">{session?.user?.role}</span>
-        </div>
+        </Link>
         <div className="h-4 w-px bg-slate-200" />
         <form
           action={async () => {
