@@ -113,6 +113,7 @@ model Employee {
   updatedAt    DateTime   @updatedAt
 
   leaveRequests LeaveRequest[]
+  payrolls      Payroll[]
 }
 
 enum EmpStatus {
@@ -558,6 +559,32 @@ enum TaxInvoiceStatus {
   CONFIRMED  // 확정
   REPORTED   // 신고완료
   CANCELLED  // 취소
+}
+
+// ── 급여관리 ──────────────────────────────────
+model Payroll {
+  id           String        @id @default(cuid())
+  employeeId   String
+  employee     Employee      @relation(fields: [employeeId], references: [id])
+  year         Int
+  month        Int
+  baseSalary   BigInt
+  bonus        BigInt        @default(0)
+  deduction    BigInt        @default(0)
+  netPay       BigInt
+  status       PayrollStatus @default(DRAFT)
+  paidAt       DateTime?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@unique([employeeId, year, month])
+}
+
+enum PayrollStatus {
+  DRAFT
+  CONFIRMED
+  PAID
 }
 
 // ── 공지사항 ──────────────────────────────────

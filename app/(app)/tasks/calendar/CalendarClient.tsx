@@ -13,16 +13,17 @@ interface Task {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  TODO: 'bg-slate-100 text-slate-600 border-slate-200',
+  PENDING: 'bg-slate-100 text-slate-600 border-slate-200',
   IN_PROGRESS: 'bg-blue-50 text-blue-700 border-blue-200',
   REVIEW: 'bg-amber-50 text-amber-700 border-amber-200',
   COMPLETED: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  ON_HOLD: 'bg-purple-50 text-purple-600 border-purple-200',
 }
 const PRIORITY_DOT: Record<string, string> = {
   URGENT: 'bg-red-500', HIGH: 'bg-orange-400', NORMAL: 'bg-slate-300', LOW: 'bg-slate-200',
 }
 const STATUS_LABEL: Record<string, string> = {
-  TODO: '예정', IN_PROGRESS: '진행', REVIEW: '검토', COMPLETED: '완료',
+  PENDING: '대기', IN_PROGRESS: '진행', REVIEW: '검토', COMPLETED: '완료', ON_HOLD: '보류',
 }
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
@@ -214,7 +215,7 @@ export function CalendarClient({ tasks, today: todayISO }: { tasks: Task[]; toda
                 <p className="text-xs text-slate-400">업무가 없습니다</p>
               ) : (
                 <div className="space-y-2">
-                  {(['TODO', 'IN_PROGRESS', 'REVIEW', 'COMPLETED'] as const).map(s => {
+                  {(['PENDING', 'IN_PROGRESS', 'REVIEW', 'COMPLETED'] as const).map(s => {
                     const count = monthTasks.filter(t => t.status === s).length
                     if (count === 0) return null
                     return (

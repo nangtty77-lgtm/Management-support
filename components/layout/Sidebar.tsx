@@ -106,6 +106,7 @@ const navSections = [
     items: [
       { href: '/employees', label: '직원관리', icon: 'employee' },
       { href: '/leaves', label: '연차관리', icon: 'calendar' },
+      { href: '/hr/payroll', label: '급여관리', icon: 'money' },
     ],
   },
   {
@@ -145,6 +146,7 @@ const navSections = [
     label: '업무',
     items: [
       { href: '/tasks', label: '업무관리', icon: 'check' },
+      { href: '/tasks/kanban', label: '칸반 보드', icon: 'chart2' },
       { href: '/tasks/calendar', label: '캘린더', icon: 'calendar' },
     ],
   },
