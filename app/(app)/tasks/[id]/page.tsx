@@ -5,6 +5,7 @@ import { canManageAllTasks, canManageOwnTask } from '@/lib/permissions'
 import { Badge } from '@/components/ui/Badge'
 import Link from 'next/link'
 import StatusChanger from '../_components/StatusChanger'
+import { TaskComments } from '../_components/TaskComments'
 
 const PRIORITY_LABEL: Record<string, string> = { URGENT: '긴급', HIGH: '높음', NORMAL: '보통', LOW: '낮음' }
 const PRIORITY_BADGE: Record<string, 'danger' | 'warning' | 'gray' | 'teal'> = { URGENT: 'danger', HIGH: 'warning', NORMAL: 'gray', LOW: 'teal' }
@@ -13,14 +14,21 @@ const STATUS_LABEL: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '
 export default async function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   const { id } = await params
-  const task = await db.task.findUnique({
-    where: { id },
-    include: {
-      assignee: { select: { name: true, email: true } },
-      creator: { select: { name: true } },
-      contract: { select: { name: true, id: true } },
-    },
-  })
+  const [task, comments] = await Promise.all([
+    db.task.findUnique({
+      where: { id },
+      include: {
+        assignee: { select: { name: true, email: true } },
+        creator: { select: { name: true } },
+        contract: { select: { name: true, id: true } },
+      },
+    }),
+    db.taskComment.findMany({
+      where: { taskId: id },
+      include: { author: { select: { id: true, name: true } } },
+      orderBy: { createdAt: 'asc' },
+    }),
+  ])
   if (!task) notFound()
 
   const canEdit = canManageAllTasks(session) || canManageOwnTask(session, task)
@@ -62,6 +70,18 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
           <StatusChanger taskId={task.id} currentStatus={task.status} />
         </div>
       )}
+
+      <TaskComments
+        taskId={task.id}
+        initialComments={comments.map(c => ({
+          id: c.id,
+          content: c.content,
+          author: c.author,
+          createdAt: c.createdAt.toISOString(),
+        }))}
+        currentUserId={session?.user?.id ?? ''}
+        isAdmin={session?.user?.role === 'ADMIN'}
+      />
     </div>
   )
 }

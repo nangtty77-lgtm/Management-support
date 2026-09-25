@@ -76,6 +76,7 @@ model User {
   taxInvoices       TaxInvoice[]
   notices           Notice[]
   noticeReads       NoticeRead[]
+  taskComments      TaskComment[]
 }
 
 enum Role {
@@ -206,6 +207,19 @@ model Task {
   contract    Contract?  @relation(fields: [contractId], references: [id])
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+
+  comments    TaskComment[]
+}
+
+model TaskComment {
+  id        String   @id @default(cuid())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Priority {
