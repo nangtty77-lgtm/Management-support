@@ -123,6 +123,7 @@ const navSections = [
   {
     label: '영업',
     items: [
+      { href: '/crm/pipeline', label: '파이프라인', icon: 'chart' },
       { href: '/crm/customers', label: '고객관리', icon: 'crm' },
       { href: '/crm/opportunities', label: '영업기회', icon: 'target' },
       { href: '/crm/visits', label: '방문관리', icon: 'location' },
