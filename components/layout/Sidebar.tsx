@@ -105,6 +105,7 @@ const navSections = [
     items: [
       { href: '/dashboard', label: '대시보드', icon: 'dashboard' },
       { href: '/kpi', label: 'KPI 대시보드', icon: 'chart' },
+      { href: '/reports', label: '통합 보고서', icon: 'chart2' },
     ],
   },
   {
