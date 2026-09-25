@@ -107,6 +107,7 @@ const navSections = [
       { href: '/employees', label: '직원관리', icon: 'employee' },
       { href: '/leaves', label: '연차관리', icon: 'calendar' },
       { href: '/hr/payroll', label: '급여관리', icon: 'money' },
+      { href: '/hr/org', label: '조직도', icon: 'crm' },
     ],
   },
   {
