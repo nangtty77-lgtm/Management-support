@@ -113,6 +113,7 @@ const navSections = [
       { href: '/employees', label: '직원관리', icon: 'employee' },
       { href: '/leaves', label: '연차관리', icon: 'calendar' },
       { href: '/hr/payroll', label: '급여관리', icon: 'money' },
+      { href: '/hr/attendance', label: '근태관리', icon: 'check' },
       { href: '/hr/org', label: '조직도', icon: 'crm' },
     ],
   },
@@ -159,8 +160,10 @@ const navSections = [
     ],
   },
   {
-    label: '커뮤니티',
+    label: '협업',
     items: [
+      { href: '/journals', label: '업무일지', icon: 'document' },
+      { href: '/meetings', label: '회의 관리', icon: 'calendar' },
       { href: '/notices', label: '공지사항', icon: 'bell' },
     ],
   },
