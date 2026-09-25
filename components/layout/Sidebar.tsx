@@ -143,7 +143,10 @@ const navSections = [
   },
   {
     label: '업무',
-    items: [{ href: '/tasks', label: '업무관리', icon: 'check' }],
+    items: [
+      { href: '/tasks', label: '업무관리', icon: 'check' },
+      { href: '/tasks/calendar', label: '캘린더', icon: 'calendar' },
+    ],
   },
   {
     label: '커뮤니티',
