@@ -95,6 +95,12 @@ function Icon({ name }: { name: string }) {
 
 const navSections = [
   {
+    label: '나',
+    items: [
+      { href: '/my', label: '마이페이지', icon: 'employee' },
+    ],
+  },
+  {
     label: '실행',
     items: [
       { href: '/dashboard', label: '대시보드', icon: 'dashboard' },
