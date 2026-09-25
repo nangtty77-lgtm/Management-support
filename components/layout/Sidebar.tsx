@@ -146,6 +146,12 @@ const navSections = [
     items: [{ href: '/tasks', label: '업무관리', icon: 'check' }],
   },
   {
+    label: '커뮤니티',
+    items: [
+      { href: '/notices', label: '공지사항', icon: 'bell' },
+    ],
+  },
+  {
     label: '알림',
     items: [{ href: '/notifications', label: '알림센터', icon: 'bell' }],
   },

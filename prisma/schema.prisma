@@ -74,6 +74,8 @@ model User {
   visits            Visit[]       @relation("VisitAssignee")
   assetsAssigned    Asset[]       @relation("AssetAssignee")
   taxInvoices       TaxInvoice[]
+  notices           Notice[]
+  noticeReads       NoticeRead[]
 }
 
 enum Role {
@@ -556,4 +558,29 @@ enum TaxInvoiceStatus {
   CONFIRMED  // 확정
   REPORTED   // 신고완료
   CANCELLED  // 취소
+}
+
+// ── 공지사항 ──────────────────────────────────
+model Notice {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  isPinned  Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reads NoticeRead[]
+}
+
+model NoticeRead {
+  id       String   @id @default(cuid())
+  noticeId String
+  notice   Notice   @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  readAt   DateTime @default(now())
+
+  @@unique([noticeId, userId])
 }
