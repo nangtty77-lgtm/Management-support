@@ -10,7 +10,7 @@ export default async function TaskKanbanPage() {
     select: {
       id: true, title: true, status: true, priority: true, dueDate: true,
       assignee: { select: { id: true, name: true } },
-      createdBy: { select: { id: true, name: true } },
+      creator: { select: { id: true, name: true } },
     },
     orderBy: [{ priority: 'asc' }, { dueDate: 'asc' }],
   })
@@ -25,7 +25,7 @@ export default async function TaskKanbanPage() {
         dueDate: t.dueDate?.toISOString() ?? null,
         assigneeName: t.assignee?.name ?? null,
         assigneeId: t.assignee?.id ?? null,
-        createdByName: t.createdBy?.name ?? null,
+        createdByName: t.creator?.name ?? null,
       }))}
       today={new Date().toISOString()}
     />
